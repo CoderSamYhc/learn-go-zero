@@ -1,0 +1,48 @@
+type Request {
+	Name string `path:"name,options=you|me"`
+}
+
+type Response {
+	Message string `json:"message"`
+}
+
+service api-api {
+	@handler ApiHandler
+	get /from/:name(Request) returns (Response)
+}
+
+type Product {
+	Id          int64  `json:"id"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	Stock       string `json:"stock"`
+	Price       int64  `json:"price"`
+	Category    string `json:"category"`
+	Status      int8   `json:"status"`
+	CreatedAt   int64  `json:"created_at"`
+	UpdatedAt   int64  `json:"updated_at"`
+}
+
+type ProductListResponse {
+	Products []*Product `json:"products"`
+	Size     int8       `json:"size"`
+	Page     int8       `json:"page"`
+	Total    int8       `json:"total"`
+}
+
+type ProductListRequest {
+	Size int8 `json:"size"`
+	Page int8 `json:"page"`
+}
+
+type CategoryListRequest {
+	Cursor int64 `form:"cursor"`
+	Ps int64 `form:"ps,default=20"`
+	Category string `form:"category"`
+	Sort string `form:"sort"`
+}
+
+type CategoryListResponse {
+	Products []*Product `json:"products"`
+
+}
