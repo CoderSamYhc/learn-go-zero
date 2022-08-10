@@ -6,43 +6,129 @@ type Response {
 	Message string `json:"message"`
 }
 
+type (
+	Product {
+		ID          int64  `json:"id"`
+		Name        string `json:"name"`
+		Description string `json:"description"`
+		Price       int64  `json:"price"`
+		Stock       int64  `json:"stock"`
+		Category    string `json:"category"`
+		Status      int64  `json:"status"`
+		CreatedAt   int64  `json:"created_at"`
+		UpdatedAt   int64  `json:"updated_at"`
+	}
+
+	Comment {
+		ID        int64    `json:"id"`
+		ProductID int64    `json:"product_id"`
+		Content   string   `json:"content"`
+		Images    []*Image `json:"images"`
+		User      *User    `json:"user"`
+		CreatedAt int64    `json:"created_at"`
+		UpdatedAt int64    `json:"updated_at"`
+	}
+
+	Image {
+		ID  int64  `json:"id"`
+		URL string `json:"url"`
+	}
+
+	User {
+		ID     int64  `json:"id"`
+		Name   string `json:"name"`
+		Avatar string `json:"avatar"`
+	}
+
+	CartProduct {
+		Product *Product `json:"product"`
+		Count   int64    `json:"count"`
+	}
+
+	Order {
+		OrderID      string `json:"order_id"`
+		Quantity     int64  `json:"quantity"`
+		ProductID    int64  `json:"product_id"`
+		ProductName  string `json:"product_name"`
+		ProductImage string `json:"product_image"`
+	}
+)
+
+type (
+	// 推荐
+	RecommendRequest {
+		Cursor int64 `form:"cursor"`
+		Ps     int64 `form:"ps,default=20"` // 分页大小
+	}
+
+	RecommendResponse {
+		Products      []*Product `json:"products"`
+		IsEnd         bool       `json:"is_end"`
+		RecommendTime int64      `json:"recommend_time"`
+	}
+
+	// 抢购
+	FlashSaleResponse {
+		StartTime int64      `json:"start_time"`
+		Products  []*Product `json:"products"`
+	}
+
+	// 分类
+	CategoryListRequest {
+		Cursor   int64  `form:"cursor"`
+		Ps       int64  `form:"ps,default=20"` // 分页大小
+		Category string `form:"category"`
+		Sort     string `form:"sort"`
+	}
+
+	CategoryListResponse {
+		Products []*Product `json:"products"`
+		IsEnd    bool       `json:"is_end"`
+		LastVal  int64      `json:"last_val"`
+	}
+
+	// 购物车
+
+	CartListRequest {
+		UID int64 `json:"uid"`
+	}
+
+	CartListResponse {
+		Products []*Product `json:"products"`
+	}
+
+	// 评论
+	ProductCommentRequest {
+		ProductID int64 `form:"product_id"`
+		Cursor    int64 `form:"cursor"`
+		Ps        int64 `form:"ps,default=20"`
+	}
+
+	ProductCommentResponse {
+		Comments    []*Comment `json:"comments"`
+		IsEnd       bool       `json:"is_end"`
+		CommentTime int64      `json:"comment_time"`
+	}
+
+	OrderListRequest {
+		UID    int64 `form:"uid"`
+		Cursor int64 `form:"cursor"`
+		Ps     int64 `form:"ps,default=20"` // 分页大小
+		Status int32 `form:"status"`
+	}
+
+	OrderListResponse {
+		Orders    []*Order `json:"orders"`
+		IsEnd     bool     `json:"is_end"`
+		OrderTime int64    `json:"order_time"`
+	}
+)
+
 service api-api {
 	@handler ApiHandler
 	get /from/:name(Request) returns (Response)
-}
-
-type Product {
-	Id          int64  `json:"id"`
-	Name        string `json:"name"`
-	Description string `json:"description"`
-	Stock       string `json:"stock"`
-	Price       int64  `json:"price"`
-	Category    string `json:"category"`
-	Status      int8   `json:"status"`
-	CreatedAt   int64  `json:"created_at"`
-	UpdatedAt   int64  `json:"updated_at"`
-}
-
-type ProductListResponse {
-	Products []*Product `json:"products"`
-	Size     int8       `json:"size"`
-	Page     int8       `json:"page"`
-	Total    int8       `json:"total"`
-}
-
-type ProductListRequest {
-	Size int8 `json:"size"`
-	Page int8 `json:"page"`
-}
-
-type CategoryListRequest {
-	Cursor int64 `form:"cursor"`
-	Ps int64 `form:"ps,default=20"`
-	Category string `form:"category"`
-	Sort string `form:"sort"`
-}
-
-type CategoryListResponse {
-	Products []*Product `json:"products"`
-
+	
+	@doc "订单列表"
+	@handler OrderListHandler
+	get /v1/order/list (OrderListRequest) returns (OrderListResponse)
 }
