@@ -17,8 +17,8 @@ type Product struct {
 	Stock       int64  `json:"stock"`
 	Category    string `json:"category"`
 	Status      int64  `json:"status"`
-	CreatedAt   int64  `json:"created_at"`
-	UpdatedAt   int64  `json:"updated_at"`
+	CreateTime  int64  `json:"create_time"`
+	UpdateTime  int64  `json:"update_time"`
 }
 
 type Comment struct {
@@ -105,10 +105,10 @@ type ProductCommentResponse struct {
 }
 
 type OrderListRequest struct {
-	UID    int64 `form:"uid"`
-	Cursor int64 `form:"cursor"`
-	Ps     int64 `form:"ps,default=20"` // 分页大小
-	Status int32 `form:"status"`
+	UID    int64 `json:"uid"`
+	Cursor int64 `json:"cursor"`
+	Ps     int64 `json:"ps,default=20"` // 分页大小
+	Status int32 `json:"status"`
 }
 
 type OrderListResponse struct {

@@ -2,7 +2,6 @@ package logic
 
 import (
 	"context"
-
 	"github.com/CoderSamYhc/learn-go-zero/apps/order/rpc/internal/svc"
 	"github.com/CoderSamYhc/learn-go-zero/apps/order/rpc/order"
 
@@ -24,7 +23,23 @@ func NewOrdersLogic(ctx context.Context, svcCtx *svc.ServiceContext) *OrdersLogi
 }
 
 func (l *OrdersLogic) Orders(in *order.OrdersRequest) (*order.OrdersResponse, error) {
-	// todo: add your logic here and delete this line
 
-	return &order.OrdersResponse{}, nil
+	orders, err := l.svcCtx.OrderItemModel.Query(l.ctx, in.UserId)
+
+	if err != nil {
+		return nil, err
+	}
+
+	var orderList []*order.OrderItem
+	for _, v := range orders{
+
+		orderList = append(orderList, &order.OrderItem{
+			OrderId: v.Orderid,
+			ProductId: v.Proid,
+			Quantity: v.Quantity,
+			UserId: v.Userid,
+		})
+	}
+
+	return &order.OrdersResponse{Orders: orderList}, nil
 }

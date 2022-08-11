@@ -24,7 +24,19 @@ func NewProductsLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Products
 }
 
 func (l *ProductsLogic) Products(in *product.ProductRequest) (*product.ProductResponse, error) {
-	// todo: add your logic here and delete this line
 
-	return &product.ProductResponse{}, nil
+	products, err := l.svcCtx.ProductModel.Query(l.ctx, in.ProductIds)
+	if err != nil {
+		return nil, err
+	}
+	productList := make(map[int64]*product.ProductItem)
+
+	for _, v := range products {
+		productList[v.Id] = &product.ProductItem{
+			ProductId: v.Id,
+			Name: v.Name,
+		}
+	}
+
+	return &product.ProductResponse{Products: productList}, nil
 }
